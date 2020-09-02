@@ -1,0 +1,146 @@
+{
+	"info": {
+		"_postman_id": "d75131cc-3fb3-453d-8766-6ad0b2566763",
+		"name": "dwfs-41",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Obtengo el Pais",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/paises/80/?name=juan&lastName=perez",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"paises",
+						"80",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "juan"
+						},
+						{
+							"key": "lastName",
+							"value": "perez"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Creo un pais",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"nombre\":\"Canada\",\"habitantes\":\"244.000.000.000\", \"id\":80}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/paises",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"paises"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Modifico el pais",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"nombre\":\"Uruguay\",\"habitantes\":\"16.000.000.000\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/paises/80/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"paises",
+						"80",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Eliminar el pais",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/paises/80/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"paises",
+						"80",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Punto de inicio",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
