@@ -1,0 +1,22 @@
+{
+  "name": "programan-encuentro41",
+  "version": "1.0.0",
+  "description": "A simple express app.",
+  "main": "myApp.js",
+  "scripts": {
+    "start": "nodemon myApp.js"
+  },
+  "keywords": [
+    "server",
+    "endpoint",
+    "test",
+    "practice"
+  ],
+  "author": "Emmanuel Hernandez",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  }
+}
