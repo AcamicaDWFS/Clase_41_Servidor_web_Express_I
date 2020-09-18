@@ -1,0 +1,229 @@
+const express = require('express')
+const app = express();
+const bodyParser = require('body-parser');
+const { Certificate } = require('crypto');
+
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+//Inicializaremos el Server en el puerto 3000
+app.listen(3000, () => {
+    console.log("El servidor está inicializando en el puerto 3000");
+});
+
+//Inicialización de un array vacío
+let celulares = [];
+
+
+//Inicializamos un Objeto respuesta
+
+let respuesta = {
+    error: false,
+    codigo: 200,
+    mensaje: ""
+};
+
+//Creamos un metodo GET raiz como punto de inicio
+app.get('/', function (req, res) {
+    //Creamos la respuesta
+    respuesta = {
+        error: false,
+        codigo: 200,
+        mensaje: "Punto de inicio",
+        almacen: celulares
+
+    };
+    res.send(respuesta);
+});
+
+//Creamos el metodo POST para crear el mobile
+app.post('/mobiles/', function (req, res) {
+    console.log(req.body.id);
+    console.log(req.body.brand);
+    console.log(req.body.color);
+    console.log(req.body.price);
+    if (!req.body.id || !req.body.brand || !req.body.color || !req.body.price) {
+        respuesta = {
+            error: true,
+            codigo: 502,
+            mensaje: "El campo id, brand, precio y color son requeridos"
+        };
+    }
+    //Si el mobile NO existe, lo creamos y generamos la respuesta
+    let mobile = {
+        id: req.body.id,
+        brand: req.body.brand,
+        color: req.body.color,
+        price: req.body.price
+    };
+    
+    celulares.push(mobile);
+    respuesta = {
+        error: false,
+        codigo: 200,
+        mensaje: "mobile creado",
+        respuesta: mobile
+    };
+
+    //Imprimimos respuesta
+    res.send(respuesta);
+}
+);
+
+//Creamos otro metodo GET para ver el mobile con su id
+app.get('/mobiles/:id', function (req, res) {
+
+    let idMob = req.params.id;
+    let idMonRes = celulares.filter((mobile) => mobile.id == idMob);
+
+    //Inicializamos la respuesta
+    if (idMonRes.length == 0) {
+        respuesta = {
+            error: true,
+            codigo: 502,
+            mensaje: "el celular no ha sido registrado",
+        }
+    } else {
+        respuesta = {
+            error: false,
+            codigo: 200,
+            mensaje: "se encontró el celular",
+            mobile: idMonRes
+        }
+    };
+
+    // Imprimimos respuesta
+    res.send(respuesta);
+});
+
+//Creamos el metodo PUT para actualizar el celular
+app.put('/mobiles/:id', function (req, res) {
+    let idMob = req.params.id;
+    let idMonRes = celulares.filter((mobile) => mobile.id == idMob);
+
+    //Inicializamos la respuesta
+    if (idMonRes.length == 0) {
+        respuesta = {
+            error: true,
+            codigo: 502,
+            mensaje: "el celular no ha sido registrado",
+        }
+    } else if (!req.body.brand || !req.body.color) {
+        respuesta = {
+            error: true,
+            codigo: 502,
+            mensaje: "El campo brand y body son requeridos"
+        };
+    } else {
+        let editMob = idMonRes[0];
+        editMob.id = req.params.id;
+        editMob.brand = req.body.brand;
+        editMob.color = req.body.color;
+        editMob.price = req.body.price;
+
+        respuesta = {
+            error: false,
+            codigo: 200,
+            mensaje: "se actualizó el celular",
+            respuesta: celulares
+        }
+    };
+
+    // Imprimimos respuesta
+    res.send(respuesta);
+});
+
+
+//Creamos el metodo DELETE para eliminar un mobile
+app.delete('/mobiles/:id', function (req, res) {
+    let idMob = req.params.id;
+    let idMonRes = celulares.findIndex((mobile) => mobile.id == idMob);
+      
+    //Inicializamos la respuesta
+    if (idMonRes.length == 0) {
+        respuesta = {
+            error: true,
+            codigo: 502,
+            mensaje: "el celular no ha sido registrado",
+        }
+    } else {
+        //Si hay un celular creado, lo eliminamos
+
+        if(idMonRes > -1) {
+            celulares.splice(idMonRes, 1)
+        }
+        
+        respuesta = {
+            error: false,
+            codigo: 200,
+            mensaje: 'mobile eliminado'
+        };
+    }
+    //Imprimimos respuesta
+    res.send(respuesta);
+});
+
+//Generamos un endpoint que retorne todos los celulares con un precio menor a $500.00
+app.get('/cheap', function (req, res) {
+        
+    let idMonRes = celulares.filter((mobile) => mobile.price < 500);
+    console.log(idMonRes);
+
+    //Inicializamos la respuesta
+    if (idMonRes.length == 0) {
+        respuesta = {
+            error: true,
+            codigo: 500,
+            mensaje: "No hay en existencia celulares con un precio menor a $500 pesos",
+        }
+    } else {
+        respuesta = {
+            error: false,
+            codigo: 200,
+            mensaje: "Se encontraron los siguientes celulares con un precio menor a $500 pesos",
+            mobile: idMonRes
+        }
+    };
+
+    // Imprimimos respuesta
+    res.send(respuesta);
+});
+
+//Generamos un endpoint que retorne todos los celulares en orden de precio
+//Orden 1 = retorna los celulares de forma descendente
+//Orden 0 = retorna los celulares de forma ascendente
+app.get('/orden', function(req, res) {
+    let orden_ = req.query.orden;
+    console.log(typeof orden_);
+    let respuesta;
+
+    switch( orden_ ) {
+        case "0":
+            //celulares.sort(function(celular_1, celular_2){return celular_1.price-celular_2.price});
+            respuesta = {
+                error: false,
+                codigo: 200,
+                mensaje: "Los celulares se muestran en orden ascendente: ",
+                celulares: celulares.sort(function(celular_1, celular_2){return celular_1.price-celular_2.price})        
+            }
+            break;
+        case "1":
+            //celulares.sort(function(celular_1, celular_2){return celular_2.price-celular_1.price});
+            respuesta = {
+                error: false,
+                codigo: 200,
+                mensaje: "Los celulares se muestran en orden descendente: ",
+                celulares: celulares.sort(function(celular_1, celular_2){return celular_2.price-celular_1.price})         
+            }
+            break;
+        default:
+            respuesta = {
+                error: true,
+                codigo: 400,
+                mensaje: "Los valores de orden deben ser solamente 0 o 1"
+            }
+    }   
+
+    res.send(respuesta);
+});
